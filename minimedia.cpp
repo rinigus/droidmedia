@@ -39,6 +39,7 @@
 #define LOG_TAG "MinimediaService"
 
 // echo "persist.camera.shutter.disable=1" >> /system/build.prop
+// echo "camera.fifo.disable=1" >> /system/build.prop
 
 using namespace android;
 
@@ -53,13 +54,11 @@ main(int, char**)
     MediaPlayerService::instantiate();
     CameraService::instantiate();
     AudioPolicyService::instantiate();
-    FakePermissionController::instantiate();
 
-#if (ANDROID_MAJOR == 4 && ANDROID_MINOR == 4) || ANDROID_MAJOR >= 5
-    FakeAppOps::instantiate();
-#endif
-
+// PermissionController and AppOps are needed on Android 4, but aren't allowed to be run here.
 #if ANDROID_MAJOR >= 5
+    FakePermissionController::instantiate();
+    FakeAppOps::instantiate();
     FakeBatteryStats::instantiate();
     FakeSensorServer::instantiate();
 #endif
