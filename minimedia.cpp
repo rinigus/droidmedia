@@ -33,13 +33,14 @@
 #include <binder/IInterface.h>
 #include <cutils/multiuser.h>
 #endif
+#if ANDROID_MAJOR < 8
 #include "allocator.h"
+#endif
 #include "services/services.h"
 
-#define LOG_TAG "MinimediaService"
+#include <cutils/properties.h>
 
-// echo "persist.camera.shutter.disable=1" >> /system/build.prop
-// echo "camera.fifo.disable=1" >> /system/build.prop
+#define LOG_TAG "MinimediaService"
 
 using namespace android;
 
@@ -50,6 +51,10 @@ main(int, char**)
 {
     sp<ProcessState> proc(ProcessState::self());
     sp<IServiceManager> sm = defaultServiceManager();
+
+    // Disable things which break hybris once and for all.
+    property_set("persist.camera.shutter.disable", "1");
+    property_set("camera.fifo.disable", "1");
 
     MediaPlayerService::instantiate();
     CameraService::instantiate();
@@ -66,7 +71,9 @@ main(int, char**)
 #if ANDROID_MAJOR >= 6
     FakeResourceManagerService::instantiate();
     FakeProcessInfoService::instantiate();
+#if ANDROID_MAJOR < 8
     FakeCameraServiceProxy::instantiate();
+#endif
     // Camera service needs to be told which users may use the camera
     sp<IBinder> binder;
     do {

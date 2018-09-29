@@ -63,12 +63,17 @@ typedef struct {
 typedef struct {
   int HAL_PIXEL_FORMAT_YV12;
   int HAL_PIXEL_FORMAT_RAW_SENSOR;
+#if ANDROID_MAJOR < 8
   int HAL_PIXEL_FORMAT_YCrCb_420_SP;
+#else
+  int HAL_PIXEL_FORMAT_YCRCB_420_SP;
+#endif
 } DroidMediaPixelFormatConstants;
 
 typedef struct {
   int QOMX_COLOR_FormatYUV420PackedSemiPlanar32m;
   int OMX_COLOR_FormatYUV420Planar;
+  int OMX_COLOR_FormatYUV420SemiPlanar;
 } DroidMediaColourFormatConstants;
 
 void droid_media_camera_constants_init(DroidMediaCameraConstants *c);
